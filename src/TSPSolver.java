@@ -8,7 +8,7 @@ public class TSPSolver {
 
     public static void main(String[] args) {
 
-        final int[] data = TSPTools.readGraphFromCVSFile("../nodegen/3000_locations.csv");
+        final int[] data = TSPTools.readGraphFromCVSFile("graphs/300_locations.csv");
 
         final int size = data.length / 2;
 
@@ -20,6 +20,7 @@ public class TSPSolver {
         double globalBest = Integer.MAX_VALUE;
         for (int n = 0; n < 1; n++) {
             rndSeed = System.currentTimeMillis();
+            rndSeed = 1;
             TSPTools.getRandomizedStartPath(path, rndSeed);
 
             double last = Integer.MAX_VALUE - 1;

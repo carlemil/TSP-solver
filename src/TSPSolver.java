@@ -8,7 +8,7 @@ public class TSPSolver {
 
     public static void main(String[] args) {
 
-        final int[] data = TSPTools.readGraphFromCVSFile("graphs/300_locations.csv");
+        final int[] data = Tools.readGraphFromCVSFile("graphs/300_locations.csv");
 
         final int size = data.length / 2;
 
@@ -21,7 +21,7 @@ public class TSPSolver {
         for (int n = 0; n < 1; n++) {
             rndSeed = System.currentTimeMillis();
             rndSeed = 1;
-            TSPTools.getRandomizedStartPath(path, rndSeed);
+            Tools.getRandomizedStartPath(path, rndSeed);
 
             double last = Integer.MAX_VALUE - 1;
             double best = Integer.MAX_VALUE;
@@ -33,19 +33,19 @@ public class TSPSolver {
             }
             if (globalBest > best) {
                 globalBest = best;
-                TSPTools.checkPath(arcs, path);
+                Tools.checkPath(arcs, path);
                 for (int i = 0; i < path.length; i++) {
                     bestPath[i] = path[i];
                 }
 
-                TSPTools.savePathToFile(bestPath, rndSeed,
-                        "result_" + size + "_" + TSPTools.getPathLength(arcs, bestPath) + ".csv");
+                Tools.savePathToFile(bestPath, rndSeed,
+                        "result_" + size + "_" + Tools.getPathLength(arcs, bestPath) + ".csv");
             }
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                TSPTools.createAndShowGUI(TSPTools.getPolygonForPlotting(data, bestPath, WINDOW_SIZE), WINDOW_SIZE,
-                        "TSP path, nodes: " + size + ", length: " + TSPTools.getPathLength(arcs, bestPath));
+                Tools.createAndShowGUI(Tools.getPolygonForPlotting(data, bestPath, WINDOW_SIZE), WINDOW_SIZE,
+                        "TSP path, nodes: " + size + ", length: " + Tools.getPathLength(arcs, bestPath));
             }
         });
     }
@@ -79,7 +79,7 @@ public class TSPSolver {
                 }
             }
         }
-        return TSPTools.getPathLength(arcs, path);
+        return Tools.getPathLength(arcs, path);
     }
 
     private static double removeXarcs(int[] path, double[][] arcs) {
@@ -93,10 +93,10 @@ public class TSPSolver {
                 double a1 = arcs[path[a]][path[d]] + arcs[path[b]][path[c]];
                 double a2 = arcs[path[a]][path[b]] + arcs[path[d]][path[c]];
                 if (a1 > a2) {
-                    TSPTools.reversSubSectionOfArray(path, d, b);
+                    Tools.reversSubSectionOfArray(path, d, b);
                 }
             }
         }
-        return TSPTools.getPathLength(arcs, path);
+        return Tools.getPathLength(arcs, path);
     }
 }

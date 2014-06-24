@@ -93,7 +93,7 @@ public class TSPSolver {
                 double a1 = arcs[path[a]][path[d]] + arcs[path[b]][path[c]];
                 double a2 = arcs[path[a]][path[b]] + arcs[path[d]][path[c]];
                 if (a1 > a2) {
-                    Tools.reversSubSectionOfArray(path, d, b);
+                    Tools.reverseSubSectionOfArray(path, d, b);
                 }
             }
         }

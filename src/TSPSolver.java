@@ -1,8 +1,9 @@
+import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 
 public class TSPSolver {
 
-    private final static int WINDOW_SIZE = 900;
+    private final static int WINDOW_SIZE = 500;
 
     private static long rndSeed;
 
@@ -15,17 +16,18 @@ public class TSPSolver {
         final double[][] arcs = Arcs.getArray(data, size, size);
 
         final int[] path = new int[] {
-                24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28, 14,19, 11, 10, 25, 3, 15,  13, 29, 22, 1,
-                //24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28, 14, 25, 3, 15, 19, 11, 10, 13, 29, 22, 1,
+                24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28, 14, 19, 11, 10, 25, 3, 15, 13, 29, 22, 1,
+        // 24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28,
+        // 14, 25, 3, 15, 19, 11, 10, 13, 29, 22, 1,
         };
-        //final int[] path = new int[size];
+        // final int[] path = new int[size];
         final int[] bestPath = new int[size];
 
         double globalBest = Integer.MAX_VALUE;
         for (int n = 0; n < 1; n++) {
             rndSeed = System.currentTimeMillis() + n;
             rndSeed = 9;
-            //Tools.getRandomizedStartPath(path, rndSeed);
+            // Tools.getRandomizedStartPath(path, rndSeed);
 
             double bestN3 = n3optimizations(arcs, path);
 
@@ -42,7 +44,7 @@ public class TSPSolver {
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Tools.createAndShowGUI(Tools.getPolygonForPlotting(data, bestPath, WINDOW_SIZE), WINDOW_SIZE, "TSP path, nodes: "
+                Tools.createAndShowGUI(Tools.getPolygonForPlotting(data, bestPath, WINDOW_SIZE), path, WINDOW_SIZE, "TSP path, nodes: "
                         + size + ", length: " + Tools.getPathLength(arcs, bestPath));
             }
         });
@@ -50,18 +52,25 @@ public class TSPSolver {
 
     private static double n3optimizations(final double[][] arcs, final int[] path) {
         double bestN2 = 500;// n2optimizations(arcs, path);
+        Tools.checkPath(arcs, path);
         moveClusters(arcs, path);
         return bestN2;
     }
 
     private static void moveClusters(final double[][] arcs, final int[] path) {
+        ArrayList<Integer> apath = new ArrayList<Integer>();
+        for (int n : path) {
+            apath.add(n);
+        }
+        checkCluster(arcs, apath, 20, 23);
 
-        checkCluster(arcs, path, 4, 6);
-
+        int i = 0;
+        for (Integer v : apath) {
+            path[i++] = v.intValue();
+        }
     }
 
-    private static void checkCluster(final double[][] arcs, final int[] path, int clusterStart, int clusterEnd) {
-        int pn = path.length;
+    private static void checkCluster(final double[][] arcs, final ArrayList<Integer> path, int clusterStart, int clusterEnd) {
 
         // cluster length
         int cn = 2;
@@ -71,13 +80,16 @@ public class TSPSolver {
         for (int cc = 0; cc < cn; cc++) {
             cl += arcs[clusterStart + cc][clusterStart + cc + 1];
         }
-        System.out.println("cluster length: " + cl);
 
         // insert cluster between this index and the following node
         int clusterInsertAt = 9;
 
-        int move = -4;
-        Tools.moveCluster(path, clusterStart, clusterEnd, move );
+        int move = 3;
+
+        System.out.println("cluster length: " + cl + ", cluster start: " + clusterStart + ", cluster end: " + clusterEnd
+                + ", cluster move: " + move);
+
+        Tools.moveCluster(path, clusterStart, clusterEnd, move);
     }
 
     private static double n2optimizations(final double[][] arcs, final int[] path) {

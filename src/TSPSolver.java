@@ -64,38 +64,69 @@ public class TSPSolver {
         for (int n : path) {
             apath.add(n);
         }
-        for (int i = 0; i < path.length - clusterLength; i++) {
-            checkCluster(arcs, apath, i, i + clusterLength);
+        for (int i = 0; i < path.length; i++) {
+            // Tools.printPath(apath);
+            checkCluster(arcs, apath, clusterLength);
+            Tools.rotatePathOneStepLeft(apath);
         }
 
         int i = 0;
         for (Integer v : apath) {
             path[i++] = v.intValue();
         }
+        System.out.println("oarcs: " + arcs[14][19] + ", " + arcs[25][10] + ", " + arcs[13][15] + "   sum "
+                + (arcs[14][19] + arcs[25][10] + arcs[13][15]));
+        System.out.println("narcs: " + arcs[14][25] + ", " + arcs[15][19] + ", " + arcs[13][10] + "   sum "
+                + (arcs[13][10] + arcs[15][19] + arcs[14][25]));
     }
 
-    private static void checkCluster(final double[][] arcs, final ArrayList<Integer> path, int clusterStart, int clusterEnd) {
+    private static void checkCluster(final double[][] arcs, final ArrayList<Integer> path, int cl) {
+        int ps = path.size();
+        // i loopar över path och kollar var vi ska stoppa in klustret,
+        // i får inte vara inom kluster Start/End, därav i = clusterLength + 1
+        for (int i = cl + 1; i < ps - 1; i++) {
 
-        // kan nog skippa många på rad beroende på hur många gånger större new
-        // är än old, dvs hur långt bort vi råkar vara
+            double oldCost = arcs[path.get(ps - 1)][path.get(0)] + // -1 -- 0
+                    arcs[path.get(cl)][path.get(cl - 1)] + // cl-1 -- cl
+                    arcs[path.get(i)][path.get(i + 1)]; // i -- i+1
+            // if((int)oldCost == 83){
+            // System.out.println("i: " + i + " node " + path.get(i) +
+            // ", cost: "
+            // + arcs[path.get(ps - 1)][path.get(0)] + ", "+// -1 -- 0
+            // arcs[path.get(cl)][path.get(cl - 1)] + ", "+// cl-1 -- cl
+            // arcs[path.get(i)][path.get(i + 1)]);
+            // }
+            // j loopar över kluster och kollar vilken båge i klustret som ska
+            // brytas för insättning
+            double bestCost = oldCost;
+            for (int j = 0; j < cl; j++) {
+                 double newCost = arcs[path.get(ps - 1)][path.get(cl)] +  //
+                         arcs[path.get(j)][path.get(i+1)] + //
+                         arcs[path.get((j + 1) % cl)][path.get(i)];
+                if (path.get(i + 1) == 13) {
+                    System.out.println("i: " + path.get(i) + " i+1: " + path.get(i + 1) + //
+                            " j: " + path.get(j) + " j+1: " + path.get((j + 1) % cl) + //
+                            " new cost " + //
+                            arcs[path.get(ps - 1)][path.get(cl)] + ", " + //
+                            arcs[path.get(j)][path.get(i+1)] + ", " + //
+                            arcs[path.get((j + 1) % cl)][path.get(i)]);
+                }
 
-        // [clusterStart - 1][clusterStart] + [clusterEnd][clusterEnd + 1]
-        int oldCost = 0;
+                // old = new cost
+                // spara i och j
 
-        // [i][clusterStart] + [clusterEnd][i+1]
-        // [i+1][clusterStart] + [clusterEnd][i] (reverse is needed)
-        int newCost = 1;
-        // steps = i;
-        int steps = 0;
+                int steps = 0;
 
-
-        if (clusterStart == 20) {
-            Tools.rotateCluster(path, clusterStart, clusterEnd, steps);
-
-            int move = 3;
-            Tools.moveCluster(path, clusterStart, clusterEnd, move);
-
-            System.out.println("cluster start: " + clusterStart + ", cluster end: " + clusterEnd + ", cluster move: " + move);
+                // if (clusterStart == 20) {
+                // Tools.rotateCluster(path, clusterStart, clusterEnd, steps);
+                //
+                // int move = 3;
+                // Tools.moveCluster(path, clusterStart, clusterEnd, move);
+                //
+                // System.out.println("cluster start: " + clusterStart +
+                // ", cluster end: " + clusterEnd + ", cluster move: " + move);
+                // }
+            }
         }
     }
 

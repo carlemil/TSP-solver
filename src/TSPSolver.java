@@ -18,10 +18,11 @@ public class TSPSolver {
         final double[][] arcs = Arcs.getArray(data, size, size);
 
         final int[] path = new int[] {
-//                 24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7,
-//                 21, 28, 14, 19, 11, 10, 25, 3, 15, 13, 29, 22, 1,
 
-                24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28, 14, 11, 10, 19, 25, 3, 15, 13, 29, 22, 1,
+                24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28, 14, 19, 11, 10, 25, 3, 15, 13, 29, 22, 1,
+
+        // 24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28,
+        // 14, 11, 10, 19, 25, 3, 15, 13, 29, 22, 1,
 
         // 24, 5, 17, 4, 12, 27, 26, 6, 23, 9, 16, 0, 18, 2, 8, 20, 7, 21, 28,
         // 14, 25, 3, 15, 19, 11, 10, 13, 29, 22, 1,
@@ -108,13 +109,7 @@ public class TSPSolver {
             if (oldCost < bestCost) {
                 bestCost = oldCost;
             }
-            // if((int)oldCost == 83){
-            // System.out.println("i: " + i + " node " + path.get(i) +
-            // ", cost: "
-            // + arcs[path.get(ps - 1)][path.get(0)] + ", "+// -1 -- 0
-            // arcs[path.get(cl)][path.get(cl - 1)] + ", "+// cl-1 -- cl
-            // arcs[path.get(i)][path.get(i + 1)]);
-            // }
+
             // j loopar över kluster och kollar vilken båge i klustret som ska
             // brytas för insättning
             for (int j = 0; j < cl; j++) {
@@ -143,20 +138,27 @@ public class TSPSolver {
                     " cost " + bestCost);
             System.out.println("bestI: " + bestI + " bestJ: " + bestJ);
 
-            // Tools.rotateCluster(path, 0, cl, bestJ);
-
             List<Integer> tmp = path.subList(0, cl);
             System.out.println("tmp path");
             Tools.printPath(tmp);
             Tools.printPath(path);
 
-            System.out.println("bestj "+bestJ);
-            //Tools.rotateCluster(path, 0, cl, bestJ);
-            System.out.println("rotate");
-            Tools.printPath(path);
+            System.out.println("cl " + cl);
 
             if (rotateCluster) {
+                System.out.println("---REVERSE---");
                 Tools.reverseCluster(path, 0, cl);
+
+                System.out.println("bestj " + bestJ);
+                Tools.rotateCluster(path, 0, cl, bestJ);
+                System.out.println("rotate");
+                Tools.printPath(path);
+            } else {
+                System.out.println("bestj " + bestJ);
+                Tools.rotateCluster(path, 0, cl, bestJ);
+                System.out.println("rotate");
+                Tools.printPath(path);
+
             }
 
             tmp = path.subList(0, cl);
